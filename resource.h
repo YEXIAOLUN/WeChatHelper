@@ -25,6 +25,9 @@
 #define MESSAGE3                        1020
 #define MESSAGE4                        1021
 #define MESSAGE5                        1022
+#define SEND17                          1023
+#define SEND18                          1024
+#define SEND19                          1025
 
 // Next default values for new objects
 // 

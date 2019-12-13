@@ -47,7 +47,7 @@ HWND ChatroomView = NULL;					//输出列表句柄
 LPCWSTR GetMsgByAddress(DWORD memAddress);   //获取信息方法
 VOID AddList(DWORD res_eax);				//添加联系人操作
 
-VOID DoAction(HWND hListView2,HWND hwndDlgtemp)
+VOID DoAction(HWND hListView2, HWND hwndDlgtemp)
 {
 	ChatroomView = hListView2;
 	int len = 100;
@@ -267,6 +267,11 @@ userInfo getChatromList(wchar_t* wxid) {
 	swprintf_s(user.username, L"%s", textUser);
 	swprintf_s(user.nick, L"%s", textNick);
 	swprintf_s(user.v1, L"%s", textV1);
+
+	OutputDebugString(LPCWSTR(user.wxid));
+	OutputDebugString(LPCWSTR(user.username));
+	OutputDebugString(LPCWSTR(user.nick));
+	OutputDebugString(LPCWSTR(user.v1));
 	return user;
 }
 LPCWSTR GetMsgByAddress(DWORD memAddress)

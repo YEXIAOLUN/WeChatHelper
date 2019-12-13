@@ -220,9 +220,10 @@ VOID SendXml15(HWND hwndDlg) {
 	wchar_t* id = A2W(cid);
 
 
-	GetDlgItemText(hwndDlg, MESSAGE3, title, sizeof(title));
-	GetDlgItemText(hwndDlg, MESSAGE4, content, sizeof(content));
-	GetDlgItemText(hwndDlg, MESSAGE5, linkurl, sizeof(linkurl));
+	GetDlgItemTextW(hwndDlg, MESSAGE3, title, sizeof(title));
+	GetDlgItemTextW(hwndDlg, MESSAGE4, content, sizeof(content));
+	GetDlgItemTextW(hwndDlg, MESSAGE5, linkurl, sizeof(linkurl));
+
 	while (pos) {
 		pos = ListView_GetNextItem(hiew, pos, LVNI_ALL);
 		int bo = ListView_GetItemState(hiew, pos, LVIS_SELECTED);

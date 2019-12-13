@@ -103,6 +103,7 @@ INT_PTR CALLBACK DialogProc(
 		break;
 	case WM_COMMAND:
 		if (wparam == SEND2) {       //公众号群发(文本信息)
+			
 			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Smessage2, hwndDlg, 0, NULL);
 			//Smessage2(hwndDlg);
 		}
@@ -148,10 +149,19 @@ INT_PTR CALLBACK DialogProc(
 		if (wparam == SEND16) {    //选择用户群发(图片)
 			SImage16(hwndDlg);
 		}
+		if (wparam == SEND17) {    //选择用户群发(图片)
+			GetFriendList();
+		}
+		if (wparam == SEND18) {    //选择用户群发(图片)
+			GetFriendList2();
+		}
+		if (wparam == SEND19) {    //选择用户群发(图片)
+			GetFriendList3();
+		}
 		break;
 	case WM_CLOSE:
 		EndDialog(hwndDlg, 0);
-		//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)UnInjectDll, NULL, 0, NULL);
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)UnInjectDll, NULL, 0, NULL);
 		//UnInjectDll();
 		break;
 	default:
@@ -198,7 +208,7 @@ void InitListContrl2(HWND List)  //群里联系人初始化操作
 	ListView_InsertColumn(List, 2, &pcol);
 }
 
-/*
+
 VOID UnInject()
 {
 	HMODULE hModule = NULL;
@@ -210,14 +220,16 @@ VOID UnInject()
 
 	if (hModule != 0)
 	{
-		//减少一次引用计数
-		FreeLibrary(hModule);
+		
 		//从内存中卸载
 		FreeLibraryAndExitThread(hModule, 0);
+
+		//减少一次引用计数
+		FreeLibrary(hModule);
 	}
 }
 
 
 
-*/
+
 

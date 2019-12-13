@@ -12,6 +12,7 @@
 #include <string>
 #include <iostream>
 #include "resource.h"
+#include "sendMessage.h"
 //#include "sendmessage.h"
 
 #pragma comment(lib, "Version.lib")
@@ -159,16 +160,17 @@ VOID insertUserLists()
 	//DWORD headPicAdd = cEax + 0x11C; //小头像
 
 	wchar_t wxid[0x100] = { 0 };
-	swprintf_s(wxid, L"%s", *((LPVOID*)wxidAdd),0);
+	swprintf_s(wxid, L"%s", *((LPVOID*)wxidAdd), 0);
+	OutputDebugString(LPCWSTR(wxid));
 
 	wchar_t nick[0x100] = { 0 };
-	swprintf_s(nick, L"%s", *((LPVOID*)wxNickAdd),0);
-
+	swprintf_s(nick, L"%s", *((LPVOID*)wxNickAdd), 0);
+	OutputDebugString(LPCWSTR(nick));
 	wchar_t wxuserID[0x100] = { 0 };
-	swprintf_s(wxuserID, L"%s", *((LPVOID*)wxuserIDAdd),0);
+	swprintf_s(wxuserID, L"%s", *((LPVOID*)wxuserIDAdd), 0);
+	OutputDebugString(LPCWSTR(wxuserID));
 
-	
-	if (wcslen(wxid) == 0 ) {
+	if (wcslen(wxid) == 0) {
 		return;
 	}
 	if (wcslen(nick) == 0) {
@@ -178,22 +180,22 @@ VOID insertUserLists()
 		return;
 	}
 	if (oldWxid[0] == 0 && newWxid[0] == 0) {
-		swprintf_s(newWxid, L"%s", *((LPVOID*)wxidAdd),0);
+		swprintf_s(newWxid, L"%s", *((LPVOID*)wxidAdd), 0);
 	}
 
 	if (oldWxid[0] == 0 && newWxid[0] != 0) {
-		swprintf_s(oldWxid, L"%s", newWxid,0);
-		swprintf_s(newWxid, L"%s", *((LPVOID*)wxidAdd),0);
+		swprintf_s(oldWxid, L"%s", newWxid, 0);
+		swprintf_s(newWxid, L"%s", *((LPVOID*)wxidAdd), 0);
 	}
 
 	if (oldWxid[0] != 0 && newWxid[0] != 0) {
 		swprintf_s(oldWxid, L"%s", newWxid);
-		swprintf_s(newWxid, L"%s", *((LPVOID*)wxidAdd),0);
+		swprintf_s(newWxid, L"%s", *((LPVOID*)wxidAdd), 0);
 	}
 	USER_INFO userInfo(wxid, wxuserID, nick);
 
-	
-	
+
+
 	for (auto& userInfoOld : userInfoList)
 	{
 		wstring wxid1 = get<0>(userInfoOld);
@@ -202,19 +204,19 @@ VOID insertUserLists()
 			return;
 		}
 	}
-	
-	
+
+
 	string str;
 	Wchar_tToString2(str, wxid);
-	
-	
-	
 
 
 
-	if (wcscmp(oldWxid, newWxid) != 0 ) {
 
-		
+
+
+	if (wcscmp(oldWxid, newWxid) != 0) {
+
+
 		if (wcslen(wxid) == 0) {
 			return;
 		}
@@ -228,7 +230,7 @@ VOID insertUserLists()
 		userInfoList.push_front(userInfo);
 
 
-		
+
 		LVITEM item = { 0 };
 		item.mask = LVIF_TEXT;
 
@@ -244,69 +246,14 @@ VOID insertUserLists()
 		item.pszText = (LPWSTR)(nick);
 		ListView_SetItem(gHwndList, &item);
 
-		
+
 	}
 
 }
-/*
-VOID AddUerList()
-{
-	for (auto& user : userInfoList)
-	{
 
-
-		LVITEM item = { 0 };
-		item.mask = LVIF_TEXT;
-			
-		item.iSubItem = 0;
-		auto a = get<0>(user);
-		item.pszText = (LPWSTR)a;
-		ListView_InsertItem(gHwndList, &item);
-
-		item.iSubItem = 1;
-		auto b = get<1>(user);
-		item.pszText = (LPWSTR)(b);
-		ListView_SetItem(gHwndList, &item);
-
-		item.iSubItem = 2;
-		auto c = get<2>(user);
-		item.pszText = (LPWSTR)(c);
-		ListView_SetItem(gHwndList, &item);
-
-	}
-	MessageBox(NULL, L"联系人列表获取成功", L"aaa", 0);
-}
-*/
-
-//跳转过来的函数 我们自己的
-/*
-5BBB989D  |.  E8 5EE8FFFF   call WeChatWi.5BBB8100   418100                           ;  这里也可以获取到数
-5BBB98A2  |.  84C0          test al,al                                                ;  edi是数据
-51280
-*/
 VOID __declspec(naked) HookF()
 {
-	//pushad: 将所有的32位通用寄存器压入堆栈
-	//pushfd:然后将32位标志寄存器EFLAGS压入堆栈
-	//popad:将所有的32位通用寄存器取出堆栈
-	//popfd:将32位标志寄存器EFLAGS取出堆栈
-	//先保存寄存器
-	// 使用pushad这些来搞还是不太稳定  还是用变量把寄存器的值保存下来 这样可靠点
-	/*
-	__asm {
-		call retCallAdd
-		mov cEax, eax
-		mov cEcx, ecx
-		mov cEdx, edx
-		mov cEbx, ebx
-		mov cEsp, esp
-		mov cEbp, ebp
-		mov cEsi, esi
-		mov cEdi, edi
-	}
-	*/
-	
-	
+
 	__asm {
 		call retCallAdd
 		mov cEax, eax
@@ -320,24 +267,8 @@ VOID __declspec(naked) HookF()
 		//pushad
 		//pushf
 	}
-	
-	//然后跳转到我们自己的处理函数 想干嘛干嘛
+
 	insertUserLists();
-	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)insertUserLists, NULL, 0, NULL);
-	//然后在还原他进来之前的所有数据
-	/*popad
-		popfd  不太可靠恢复不全 所以才有变量的方式保存下来再赋值过去*/
-		/*
-		mov eax, cEax
-			mov ecx, cEcx
-			mov edx, cEdx
-			mov ebx, cEbx
-			mov esp, cEsp
-			mov ebp, cEbp
-			mov esi, cEsi
-			mov edi, cEdi
-		*/
-	
 	__asm {
 		//popf
 		//popad
@@ -355,26 +286,6 @@ VOID __declspec(naked) HookF()
 		jmp retAdd
 
 	}
-	
-	/*
-	__asm
-	{
-		mov eax, cEax
-		mov ecx, cEcx
-		mov edx, cEdx
-		mov ebx, cEbx
-		mov esp, cEsp
-		mov ebp, cEbp
-		mov esi, cEsi
-		mov edi, cEdi
-
-		//补充被覆盖的代码
-		call overWritedCallAdd
-
-		//跳回被HOOK指令的下一条指令
-		jmp retAdd
-	}
-	*/
 	MessageBox(NULL, L"again", L"标题", 0);
 }
 
@@ -389,11 +300,240 @@ VOID HookWechatQrcode(HWND hwndDlg, HWND hwndList, DWORD HookAdd)
 	//retCallAdd = WinAdd + 0x5A8A0;   //新版微信
 	retAdd = WinAdd + 0x420999;
 	//retAdd = WinAdd + 0x441899;      //新版微信
-	
+
 
 	hookAdd = WinAdd + HookAdd;
 	jmpAdd = &HookF;
-	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)StartHook, NULL, 0, NULL);
+	//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)StartHook, NULL, 0, NULL);
 	//StartHook(WinAdd + HookAdd, &HookF);
-}	
+}
 
+
+
+
+
+
+
+//好友列表基址
+#define WXADDR_DATA_BASE *((PDWORD)(getWechatWin()+0x113227C))
+#define WXADDR_ALL_USERS (WXADDR_DATA_BASE+0x24+0x68) 
+
+// 存储节点地址的类型
+typedef std::list< DWORD> DWORD_LIST;
+
+// WX数据链表入口结构体
+typedef struct _RAW_WXNODE
+{
+	union
+	{
+		DWORD dwStart;          // 是起始值
+		PDWORD pStartNode;      // 又是起始节点
+	} u1;
+
+	DWORD dwTotal;              // 节点总数
+
+} RAW_WXNODE, * PRAW_WXNODE;
+
+
+//微信字符串结构体
+typedef struct _WXUNICODE_STRING
+{
+	wchar_t* Buffer; //指向字符串的指针
+	UINT Length;   //有效字符串的长度（字节数）
+	UINT MaximumLength; //字符串的最大长度（字节数）
+
+}WXUNICODE_STRING, * PWXUNICODE_STRING;
+
+
+// 遍历链表节点
+void TraversalWxNode(PDWORD pWxNode, DWORD_LIST& dwListAddr, DWORD dwStart, DWORD dwTotal)
+{
+	// 这个可以不写，但是为了安全
+	if (dwListAddr.size() >= dwTotal) return;
+
+	for (int i = 0; i < 3; i++)
+	{
+		DWORD dwAddr = pWxNode[i];
+
+		// 判断是否在列表中，并且不等于起点地址
+		DWORD_LIST::iterator iter;
+		iter = std::find(dwListAddr.begin(), dwListAddr.end(), dwAddr);
+		if (iter == dwListAddr.end() && dwAddr != dwStart)
+		{
+			// 递归查找
+			dwListAddr.push_back(dwAddr);
+			TraversalWxNode((PDWORD)dwAddr, dwListAddr, dwStart, dwTotal);
+		}
+	}
+}
+// 获取所有公众号
+BOOL GetFriendList()
+{
+	ListView_DeleteAllItems(gHwndList);
+
+	PRAW_WXNODE pFriendNodes = (PRAW_WXNODE)WXADDR_ALL_USERS;
+
+	// 存储所有好友链表节点的首地址
+	DWORD_LIST listFriendAddr;
+
+	// 遍历所有好友的节点地址
+	TraversalWxNode(pFriendNodes->u1.pStartNode, listFriendAddr,
+		pFriendNodes->u1.dwStart, pFriendNodes->dwTotal);
+
+	DWORD_LIST::iterator iter;
+	for (iter = listFriendAddr.begin(); iter != listFriendAddr.end(); iter++)
+	{
+		DWORD dwAddr = *iter;
+		DWORD usersListData = dwAddr + 0x28;
+
+		PWXUNICODE_STRING pwxid = (PWXUNICODE_STRING)(usersListData + 0x8); //微信id
+		PWXUNICODE_STRING pWxNumber = (PWXUNICODE_STRING)(usersListData + 0x1c); //微信号
+		PWXUNICODE_STRING pWxV1 = (PWXUNICODE_STRING)(usersListData + 0x30); //wxV1
+		PWXUNICODE_STRING pWxRemarks = (PWXUNICODE_STRING)(usersListData + 0x50);//备注
+		PWXUNICODE_STRING pWxName = (PWXUNICODE_STRING)(usersListData + 0x64); //微信名称
+		PWXUNICODE_STRING headMaxImg = (PWXUNICODE_STRING)(usersListData + 0x108);//大图
+		PWXUNICODE_STRING headMinImg = (PWXUNICODE_STRING)(usersListData + 0xF4);//小图
+		//pWxNumber->Buffer 就是字付串
+		if (pwxid->Length > 0) {
+			wchar_t* wcWxid = pwxid->Buffer; //微信号
+			wchar_t* wcWxNumber = pWxNumber->Buffer; //微信号
+			wchar_t* wcpWxName = pWxName->Buffer; //微信号
+			OutputDebugStringW(wcWxid);
+			//wstring wstrWxnumber = pWxNumber->Buffer; //微信号
+			string  str;
+			Wchar_tToString(str, wcWxid);
+			if (strstr(str.c_str(), "gh_") != NULL) {
+				LVITEM item = { 0 };
+				item.mask = LVIF_TEXT;
+
+				item.iSubItem = 0;
+				item.pszText = (LPWSTR)(wcWxid);
+				ListView_InsertItem(gHwndList, &item);
+
+				item.iSubItem = 1;
+				item.pszText = (LPWSTR)(wcWxNumber);
+				ListView_SetItem(gHwndList, &item);
+
+				item.iSubItem = 2;
+				item.pszText = (LPWSTR)(pWxName->Buffer);
+				ListView_SetItem(gHwndList, &item);
+			}
+		}
+	}
+	return TRUE;
+
+}
+// 获取所有群
+BOOL GetFriendList2()
+{
+	ListView_DeleteAllItems(gHwndList);
+
+	PRAW_WXNODE pFriendNodes = (PRAW_WXNODE)WXADDR_ALL_USERS;
+
+	// 存储所有好友链表节点的首地址
+	DWORD_LIST listFriendAddr;
+
+	// 遍历所有好友的节点地址
+	TraversalWxNode(pFriendNodes->u1.pStartNode, listFriendAddr,
+		pFriendNodes->u1.dwStart, pFriendNodes->dwTotal);
+
+	DWORD_LIST::iterator iter;
+	for (iter = listFriendAddr.begin(); iter != listFriendAddr.end(); iter++)
+	{
+		DWORD dwAddr = *iter;
+		DWORD usersListData = dwAddr + 0x28;
+
+		PWXUNICODE_STRING pwxid = (PWXUNICODE_STRING)(usersListData + 0x8); //微信id
+		PWXUNICODE_STRING pWxNumber = (PWXUNICODE_STRING)(usersListData + 0x1c); //微信号
+		PWXUNICODE_STRING pWxV1 = (PWXUNICODE_STRING)(usersListData + 0x30); //wxV1
+		PWXUNICODE_STRING pWxRemarks = (PWXUNICODE_STRING)(usersListData + 0x50);//备注
+		PWXUNICODE_STRING pWxName = (PWXUNICODE_STRING)(usersListData + 0x64); //微信名称
+		PWXUNICODE_STRING headMaxImg = (PWXUNICODE_STRING)(usersListData + 0x108);//大图
+		PWXUNICODE_STRING headMinImg = (PWXUNICODE_STRING)(usersListData + 0xF4);//小图
+		//pWxNumber->Buffer 就是字付串
+		if (pwxid->Length > 0) {
+			wchar_t* wcWxid = pwxid->Buffer; //微信号
+			wchar_t* wcWxNumber = pWxNumber->Buffer; //微信号
+			wchar_t* wcpWxName = pWxName->Buffer; //微信号
+			OutputDebugStringW(wcWxid);
+			//wstring wstrWxnumber = pWxNumber->Buffer; //微信号
+			string  str;
+			Wchar_tToString(str, wcWxid);
+			if (strstr(str.c_str(), "@chatroom") != NULL) {
+				LVITEM item = { 0 };
+				item.mask = LVIF_TEXT;
+
+				item.iSubItem = 0;
+				item.pszText = (LPWSTR)(wcWxid);
+				ListView_InsertItem(gHwndList, &item);
+
+				item.iSubItem = 1;
+				item.pszText = (LPWSTR)(wcWxNumber);
+				ListView_SetItem(gHwndList, &item);
+
+				item.iSubItem = 2;
+				item.pszText = (LPWSTR)(pWxName->Buffer);
+				ListView_SetItem(gHwndList, &item);
+			}
+		}
+	}
+	return TRUE;
+
+}
+// 获取所有联系人
+BOOL GetFriendList3()
+{
+	ListView_DeleteAllItems(gHwndList);
+
+	PRAW_WXNODE pFriendNodes = (PRAW_WXNODE)WXADDR_ALL_USERS;
+
+	// 存储所有好友链表节点的首地址
+	DWORD_LIST listFriendAddr;
+
+	// 遍历所有好友的节点地址
+	TraversalWxNode(pFriendNodes->u1.pStartNode, listFriendAddr,
+		pFriendNodes->u1.dwStart, pFriendNodes->dwTotal);
+
+	DWORD_LIST::iterator iter;
+	for (iter = listFriendAddr.begin(); iter != listFriendAddr.end(); iter++)
+	{
+		DWORD dwAddr = *iter;
+		DWORD usersListData = dwAddr + 0x28;
+
+		PWXUNICODE_STRING pwxid = (PWXUNICODE_STRING)(usersListData + 0x8); //微信id
+		PWXUNICODE_STRING pWxNumber = (PWXUNICODE_STRING)(usersListData + 0x1c); //微信号
+		PWXUNICODE_STRING pWxV1 = (PWXUNICODE_STRING)(usersListData + 0x30); //wxV1
+		PWXUNICODE_STRING pWxRemarks = (PWXUNICODE_STRING)(usersListData + 0x50);//备注
+		PWXUNICODE_STRING pWxName = (PWXUNICODE_STRING)(usersListData + 0x64); //微信名称
+		PWXUNICODE_STRING headMaxImg = (PWXUNICODE_STRING)(usersListData + 0x108);//大图
+		PWXUNICODE_STRING headMinImg = (PWXUNICODE_STRING)(usersListData + 0xF4);//小图
+		//pWxNumber->Buffer 就是字付串
+		if (pwxid->Length > 0) {
+			wchar_t* wcWxid = pwxid->Buffer; //微信号
+			wchar_t* wcWxNumber = pWxNumber->Buffer; //微信号
+			wchar_t* wcpWxName = pWxRemarks->Buffer; //微信号
+			OutputDebugStringW(wcWxid);
+			//wstring wstrWxnumber = pWxNumber->Buffer; //微信号
+			string  str;
+			Wchar_tToString(str, wcWxid);
+			if (strstr(str.c_str(), "@chatroom") == NULL && strstr(str.c_str(), "gh") == NULL) {
+				LVITEM item = { 0 };
+				item.mask = LVIF_TEXT;
+
+				item.iSubItem = 0;
+				item.pszText = (LPWSTR)(wcWxid);
+				ListView_InsertItem(gHwndList, &item);
+
+				item.iSubItem = 1;
+				item.pszText = (LPWSTR)(wcWxNumber);
+				ListView_SetItem(gHwndList, &item);
+
+				item.iSubItem = 2;
+				item.pszText = (LPWSTR)(pWxName->Buffer);
+				ListView_SetItem(gHwndList, &item);
+			}
+		}
+	}
+	return TRUE;
+
+}
