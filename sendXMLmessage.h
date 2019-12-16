@@ -4,3 +4,4 @@ VOID SendXml12(HWND hwndDlg);
 VOID SendXml13(HWND hwndDlg);
 VOID SendXml14(HWND hwndDlg);
 VOID SendXml15(HWND hwndDlg);
+VOID SendXml16(HWND hwndDlg);

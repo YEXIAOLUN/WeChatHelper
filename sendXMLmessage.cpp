@@ -206,7 +206,7 @@ VOID SendXml15(HWND hwndDlg) {
 	int len = 100;
 	HWND hiew = GetDlgItem(hwndDlg, USER_LISTS);
 	TCHAR wstrText[4][128] = { 0 };
-	int pos = 1;
+	int pos = -1;
 	CString strFile = OpenImage();
 	swprintf_s(pic, L"%s", strFile);
 
@@ -219,12 +219,12 @@ VOID SendXml15(HWND hwndDlg) {
 	const char* cid = (const char*) * ((DWORD*)szBuf);
 	wchar_t* id = A2W(cid);
 
-
+	int sums = ListView_GetItemCount(hiew);
 	GetDlgItemTextW(hwndDlg, MESSAGE3, title, sizeof(title));
 	GetDlgItemTextW(hwndDlg, MESSAGE4, content, sizeof(content));
 	GetDlgItemTextW(hwndDlg, MESSAGE5, linkurl, sizeof(linkurl));
 
-	while (pos) {
+	for(int i=0;i<sums;i++) {
 		pos = ListView_GetNextItem(hiew, pos, LVNI_ALL);
 		int bo = ListView_GetItemState(hiew, pos, LVIS_SELECTED);
 		if (bo != 0) {
@@ -234,6 +234,40 @@ VOID SendXml15(HWND hwndDlg) {
 			SendXml(title, content, linkurl, pic, id, wxid);
 			Sleep(1000);
 		}
+	}
+	MessageBox(NULL, L"发送成功", L"aaa", 0);
+}
+VOID SendXml16(HWND hwndDlg) {
+	wchar_t pic[0x300] = { 0 };
+	int len = 100;
+	HWND hiew = GetDlgItem(hwndDlg, USER_LISTS);
+	TCHAR wstrText[4][128] = { 0 };
+	int pos = -1;
+	CString strFile = OpenImage();
+	swprintf_s(pic, L"%s", strFile);
+
+	wchar_t title[0x3000] = { 0 };
+	wchar_t content[0x3000] = { 0 };
+	wchar_t linkurl[0x3000] = { 0 };
+
+	USES_CONVERSION;
+	char* szBuf = (char*)GetModuleHandle(L"WeChatWin.dll") + 0X1131BEC;
+	const char* cid = (const char*) * ((DWORD*)szBuf);
+	wchar_t* id = A2W(cid);
+
+	int sums = ListView_GetItemCount(hiew);
+	GetDlgItemTextW(hwndDlg, MESSAGE3, title, sizeof(title));
+	GetDlgItemTextW(hwndDlg, MESSAGE4, content, sizeof(content));
+	GetDlgItemTextW(hwndDlg, MESSAGE5, linkurl, sizeof(linkurl));
+
+	for(int i=0;i<sums;i++) {
+		pos = ListView_GetNextItem(hiew, pos, LVNI_ALL);
+		ListView_GetItemText(hiew, pos, 0, wstrText[0], sizeof(wstrText[0]));
+		wchar_t wxid[0x100] = { 0 };
+		swprintf_s(wxid, L"%s", wstrText);
+		SendXml(title, content, linkurl, pic, id, wxid);
+		Sleep(1000);
+		
 	}
 	MessageBox(NULL, L"发送成功", L"aaa", 0);
 }

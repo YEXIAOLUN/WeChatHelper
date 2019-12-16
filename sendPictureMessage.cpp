@@ -156,10 +156,11 @@ VOID SImage15(HWND hwndDlg) {
 	int len = 100;
 	HWND hiew = GetDlgItem(hwndDlg, USER_LISTS);
 	TCHAR wstrText[4][128] = { 0 };
-	int pos = 1;
+	int pos = -1;
 	CString strFile = OpenImage();
 	swprintf_s(messagetemp, L"%s", strFile);
-	while (pos) {
+	int sums = ListView_GetItemCount(hiew);
+	for(int i=0;i<sums;i++) {
 		pos = ListView_GetNextItem(hiew, pos, LVNI_ALL);
 		ListView_GetItemText(hiew, pos, 0, wstrText[0], sizeof(wstrText[0]));
 		wchar_t wxid[0x100] = { 0 };
@@ -204,6 +205,31 @@ VOID SImage16(HWND hwndDlg) {
 	MessageBox(NULL, L"发送成功", L"aaa", 0);
 }
 
+VOID SImage17(HWND hwndDlg) {
+	wchar_t messagetemp[0x300] = { 0 };
+	wchar_t messagetemp2[0x300] = { 0 };
+	int len = 100;
+	HWND hiew = GetDlgItem(hwndDlg, USER_LISTS);
+	TCHAR wstrText[4][128] = { 0 };
+	int pos = -1;
+	int sums = ListView_GetItemCount(hiew);
+	CString strFile = OpenImage();
+	swprintf_s(messagetemp, L"%s", strFile);
+	for(int i=0;i<sums;i++) {
+		pos = ListView_GetNextItem(hiew, pos, LVNI_ALL);
+		int bo = ListView_GetItemState(hiew, pos, LVIS_SELECTED);
+		ListView_GetItemText(hiew, pos, 0, wstrText[0], sizeof(wstrText[0]));
+		wchar_t wxid[0x100] = { 0 };
+		swprintf_s(wxid, L"%s", wstrText);
+		GetDlgItemText(hwndDlg, MESSAGE, messagetemp2, sizeof(messagetemp2));
+		//MessageBox(NULL, messagetemp2, L"aaa", 0);
+		SendImageMessage(wxid, messagetemp);
+		SendWXIDTextMessage(wxid, messagetemp2);
+		Sleep(1000);
+
+	}
+	MessageBox(NULL, L"发送成功", L"aaa", 0);
+}
 
 CString OpenImage() {
 	CString strFile = _T("");

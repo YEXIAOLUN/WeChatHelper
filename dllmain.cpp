@@ -102,66 +102,50 @@ INT_PTR CALLBACK DialogProc(
 		//HookWechatQrcode(hwndDlg, gUserListView, 0x441894);     //新版微信
 		break;
 	case WM_COMMAND:
-		if (wparam == SEND2) {       //公众号群发(文本信息)
-			
-			CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Smessage2, hwndDlg, 0, NULL);
-			//Smessage2(hwndDlg);
-		}
-		if (wparam == SEND3) {     //群群发(文本信息)
-			Smessage3(hwndDlg);
-		}
-		if (wparam == SEND4) {     //其他联系人群发(文本信息)
-			Smessage4(hwndDlg);
-		}
-		if (wparam == SEND5) {    //选择用户群发(文本信息)
-			Smessage5(hwndDlg);
-		}
-		if (wparam == SEND6){    //获取群联系人列表
-			DoAction(gUserListView2,hwndDlgtemp);  
-		}
-		if (wparam == SEND7) {	  //添加指定联系人
-			Add7(hwndDlg);      
-		}
-		if (wparam == SEND8) {    //添加所有联系人
-			Add8(hwndDlg);	 
-		}
-		if (wparam == SEND9) {   //发送xml消息（公众号）
-			SendXml12(hwndDlg); 
-		}
-		if (wparam == SEND10) {  //发送xml消息（群）
-			SendXml13(hwndDlg);
-		}
-		if (wparam == SEND11) {		 //发送xml消息（其他联系人）
-			SendXml14(hwndDlg);
-		}
-		if (wparam == SEND12) {		//发送xml消息（指定联系人）
-			SendXml15(hwndDlg);
-		}
-		if (wparam == SEND13) {    //公众号群发(图片)
-			SImage13(hwndDlg);
-		}
-		if (wparam == SEND14) {		//群群发(图片)
-			SImage14(hwndDlg);
-		}
-		if (wparam == SEND15) {    //其他联系人群发(图片)
-			SImage15(hwndDlg);
-		}
-		if (wparam == SEND16) {    //选择用户群发(图片)
-			SImage16(hwndDlg);
-		}
-		if (wparam == SEND17) {    //选择用户群发(图片)
+		if (wparam == SEND1) {       //获取所有公众号
 			GetFriendList();
 		}
-		if (wparam == SEND18) {    //选择用户群发(图片)
+		if (wparam == SEND2) {       //获取所有群
 			GetFriendList2();
 		}
-		if (wparam == SEND19) {    //选择用户群发(图片)
+		if (wparam == SEND3) {     //获取所有联系人
 			GetFriendList3();
 		}
+		if (wparam == SEND4) {    //搜索
+			GetFriendList4(hwndDlg);
+		}
+		if (wparam == SEND30) {   //消息群发(所有)
+			Smessage6(hwndDlg);
+		}
+		if (wparam == SEND31){    //消息群发(指定)
+			Smessage5(hwndDlg);
+		}
+		if (wparam == SEND32) {	 //图片群发(全部)
+			SImage17(hwndDlg);
+		}
+		if (wparam == SEND33) {    //图片群发(指定)
+			SImage16(hwndDlg);
+		}
+		if (wparam == SEND34) {   //发送xml消息（所有）
+			SendXml16(hwndDlg);
+		}
+		if (wparam == SEND35) {  //发送xml消息（指定）
+			SendXml15(hwndDlg);
+		}
+		if (wparam == SEND90) {		 //获取群好友
+			DoAction(gUserListView2, hwndDlgtemp);
+		}
+		if (wparam == SEND91) {		//添加好友（指定）
+			Add7(hwndDlg);
+		}
+		if (wparam == SEND92) {   //添加好友（全部）
+			Add8(hwndDlg);
+		}
+
 		break;
 	case WM_CLOSE:
 		EndDialog(hwndDlg, 0);
-		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)UnInjectDll, NULL, 0, NULL);
+		//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)UnInjectDll, NULL, 0, NULL);
 		//UnInjectDll();
 		break;
 	default:
@@ -208,7 +192,7 @@ void InitListContrl2(HWND List)  //群里联系人初始化操作
 	ListView_InsertColumn(List, 2, &pcol);
 }
 
-
+/*
 VOID UnInject()
 {
 	HMODULE hModule = NULL;
@@ -231,5 +215,5 @@ VOID UnInject()
 
 
 
-
+*/
 

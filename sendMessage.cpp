@@ -54,29 +54,6 @@ VOID SendWXIDTextMessage(wchar_t* wxid, wchar_t* message) {
 
 
 	OutputDebugString(LPCWSTR(asmMessage));
-	/*
-	__asm {
-		mov edx, asmWxid
-
-		//传递参数
-		push 0x1
-
-		mov eax, 0x0
-		push eax
-
-		//微信消息内容
-		mov ebx, asmMessage
-		push ebx
-
-		lea ecx, buff
-
-		//调用函数
-		call sendCall
-
-		//平衡堆栈
-		add esp, 0xC
-	}
-	*/
 
 	__asm {
 		mov edx, asmWxid
@@ -90,49 +67,11 @@ VOID SendWXIDTextMessage(wchar_t* wxid, wchar_t* message) {
 		add esp, 0xC
 	}
 
-
-	//MessageBox(NULL, aaa, L"aaa", 0);
-	/*
-	try {
-		__asm {
-			mov edx, asmWxid;
-			push 0x1;
-			push 0;
-			mov ebx, asmMessage;
-			push ebx;
-			lea ecx, buff;
-			call sendCall;
-			add esp, 0xC;
-		}
-	}
-	catch(wchar_t s){
-		wchar_t yi[0x100] = { 0 };
-		swprintf_s(yi, L" 异常：%s", s);
-		MessageBox(NULL, yi, L"aaa", 0);
-	}
-	*/
-	/*
-	__asm
-	{
-		mov edx, asmWxid
-		lea eax, buff
-		mov ebx, asmMessage
-		lea ecx, buff
-
-		push 0x1
-		push eax
-		push ebx
-		call sendCall
-		add esp, 0xC
-
-		//mov returnValue,eax
-	}
-	*/
 }
 
 
 
-
+/*
 VOID Smessage2(HWND hwndDlg) {
 	wchar_t messagetemp[0x300] = { 0 };
 	int len = 100;
@@ -204,13 +143,16 @@ VOID Smessage4(HWND hwndDlg) {
 	}
 	MessageBox(NULL, L"发送成功", L"aaa", 0);
 }
+*/
+//发送指定的联系人
 VOID Smessage5(HWND hwndDlg) {
 	wchar_t messagetemp[0x300] = { 0 };
 	int len = 100;
 	HWND hiew = GetDlgItem(hwndDlg, USER_LISTS);
 	TCHAR wstrText[4][128] = { 0 };
-	int pos = 1;
-	while (pos) {
+	int pos = -1;
+	int sums = ListView_GetItemCount(hiew);
+	for(int i=0;i<sums;i++){
 		pos = ListView_GetNextItem(hiew, pos, LVNI_ALL);
 		int bo = ListView_GetItemState(hiew, pos, LVIS_SELECTED);
 		if (bo != 0) {
@@ -221,6 +163,28 @@ VOID Smessage5(HWND hwndDlg) {
 			SendWXIDTextMessage(wxid, messagetemp);
 			Sleep(1000);
 		}
+
+	}
+	MessageBox(NULL, L"发送成功", L"aaa", 0);
+}
+//发送所有联系人
+VOID Smessage6(HWND hwndDlg) {
+	wchar_t messagetemp[0x300] = { 0 };
+	int len = 100;
+	HWND hiew = GetDlgItem(hwndDlg, USER_LISTS);
+	TCHAR wstrText[4][128] = { 0 };
+	int sums = ListView_GetItemCount(hiew);
+
+	int pos = -1;
+	for(int i=0;i<sums;i++){
+		pos = ListView_GetNextItem(hiew, pos, LVNI_ALL);
+		int bo = ListView_GetItemState(hiew, pos, LVIS_SELECTED);
+		ListView_GetItemText(hiew, pos, 0, wstrText[0], sizeof(wstrText[0]));
+		wchar_t wxid[0x100] = { 0 };
+		swprintf_s(wxid, L"%s", wstrText);
+		GetDlgItemText(hwndDlg, MESSAGE, messagetemp, sizeof(messagetemp));
+		SendWXIDTextMessage(wxid, messagetemp);
+		Sleep(1000);
 
 	}
 	MessageBox(NULL, L"发送成功", L"aaa", 0);

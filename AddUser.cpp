@@ -2,7 +2,15 @@
 #include "AddUser.h"
 #include "resource.h"
 
-/*
+struct wechatText2 {
+	wchar_t* pStr;
+	int strLen;
+	int iStrLen;
+	int fill1 = 0;
+	int fill2 = 0;
+};
+
+
 struct wechatText {
 	wchar_t* pStr;
 	int strLen;
@@ -10,7 +18,7 @@ struct wechatText {
 	int fill1 = 0;
 	int fill2 = 0;
 };
-
+/*
 VOID addUser(wchar_t* wxid, wchar_t* message) {
 	DWORD base = (DWORD)GetModuleHandleA("WeChatWin.dll");
 	DWORD callAdd = base + 0x47AE60;
@@ -178,47 +186,146 @@ void addUser(DWORD dwType, wchar_t*  wxid, wchar_t* msg)
 	delete asmWxid;
 }
 
+VOID addUserfront(wchar_t * chatid1, wchar_t *wxid1) {
 
-VOID Add7(HWND hwndDlg) {     //添加指定的联系人
-	wchar_t messagetemp[0x300] = { 0 };
-	int len = 100;
-	HWND hiew = GetDlgItem(hwndDlg, USER_LISTS2);
+	//wchar_t chatid1[50] = L"22476457425@chatroom";
+
+	//wchar_t wxid1[50] = L"wxid_rao4z8481rqs22";
+	//wchar_t wxid1[50] = L"wxid_uyvwh7wpqfdr22";
+
+	char* chatid = (char*)chatid1;
+
+	wechatText2 wxid = { 0 };
+
+	wxid.pStr = wxid1;
+
+	wxid.strLen = wcslen(wxid1);
+
+	wxid.iStrLen = wcslen(wxid1) * 2;
+
+	wchar_t datatbuffer[0xD0] = { 0 };
+	DWORD* dwDatabuf = (DWORD*)&datatbuffer;
+	dwDatabuf[0] = (DWORD)&wxid.pStr;
+	dwDatabuf[1] = dwDatabuf[0] + 0x14;
+	dwDatabuf[2] = dwDatabuf[0] + 0x14;
+
+
+	DWORD wechatWinBaseAddress = (DWORD)GetModuleHandleA("WeChatWin.dll");
+
+
+	DWORD call1 = wechatWinBaseAddress + 0x47B070;
+	DWORD call2 = wechatWinBaseAddress + 0x80E10;
+	DWORD call3 = wechatWinBaseAddress + 0x265990;
+
+	DWORD call5 = wechatWinBaseAddress + 0x113224C;
+
+
+	call5 = *((DWORD*)call5);
+
+	;
+
+	__asm {
+		pushad
+
+		sub esp, 0x14
+		mov ecx, esp
+		push - 0x1
+		mov dword ptr ds : [ecx] , 0x0
+		mov dword ptr ds : [ecx + 0x4] , 0x0
+		mov dword ptr ds : [ecx + 0x8] , 0x0
+		mov dword ptr ds : [ecx + 0xC] , 0x0
+		mov dword ptr ds : [ecx + 0x10] , 0x0
+		push chatid
+		call call1
+		sub esp, 0xC
+		lea eax, datatbuffer
+		mov ecx, esp
+		push eax
+		call call2
+		mov eax, call5
+		mov ecx, eax
+		call call3
+		popad
+	}
+
+
+
+}
+
+VOID Add8(HWND hwndDlg) {     //添加指定的联系人
+	wchar_t chatid1[0x300] = { 0 };
+	HWND hiew = GetDlgItem(hwndDlg, USER_LISTS);
 	TCHAR wstrText[4][128] = { 0 };
-	int pos = 1;
+	int pos = -1;
 	wchar_t wxid[0x100] = { 0 };
-	while (pos) {
+	int sums = ListView_GetItemCount(hiew);
+	for (int i = 0; i < sums; i++) {
 		pos = ListView_GetNextItem(hiew, pos, LVNI_ALL);
 		int bo = ListView_GetItemState(hiew, pos, LVIS_SELECTED);
 		if (bo != 0) {
 			ListView_GetItemText(hiew, pos, 0, wstrText[0], sizeof(wstrText[0]));
-			wchar_t wxid[0x100] = { 0 };
-			swprintf_s(wxid, L"%s", wstrText);
-			MessageBox(NULL, wxid, L"aaa", 0);
-			GetDlgItemText(hwndDlg, MESSAGE2, messagetemp, sizeof(messagetemp));
-			//MessageBox(NULL, wxid, L"标题", 0);
-			addUser(0,wxid, messagetemp);
-			Sleep(5000);
+			swprintf_s(chatid1, L"%s", wstrText);
 		}
-			
+	}
+	wchar_t messagetemp[0x300] = { 0 };
+	wchar_t wxid1[0x300] = { 0 };
+	HWND hiew2 = GetDlgItem(hwndDlg, USER_LISTS2);
+	TCHAR wstrText2[4][128] = { 0 };
+	int pos2 = -1;
+	int sums2 = ListView_GetItemCount(hiew2);
+	for (int i = 0; i < sums2; i++) {
+		pos2 = ListView_GetNextItem(hiew2, pos2, LVNI_ALL);
+		ListView_GetItemText(hiew2, pos2, 0, wstrText2[0], sizeof(wstrText2[0]));
+		swprintf_s(wxid1, L"%s", wstrText2);
+		addUserfront(chatid1, wxid1);
+		Sleep(5000);
+		GetDlgItemText(hwndDlg, MESSAGE2, messagetemp, sizeof(messagetemp));
+		//wchar_t strsum[0x300] = { 0 };
+		//swprintf_s(strsum, L"chatroom:%s wxid:%s message:%s", chatid1, wxid1, messagetemp);
+		//MessageBox(NULL, strsum, L"aaa", 0);
+		addUser(1, wxid1, messagetemp);
+
 	}
 	MessageBox(NULL, L"添加好友发送成功", L"标题", 0);
 }
 
-VOID Add8(HWND hwndDlg) {     //添加所有联系人
-	wchar_t messagetemp[0x300] = { 0 };
-	int len = 100;
-	HWND hiew = GetDlgItem(hwndDlg, USER_LISTS2);
+VOID Add7(HWND hwndDlg) {     //添加所有联系人
+	wchar_t chatid1[0x300] = { 0 };
+	HWND hiew = GetDlgItem(hwndDlg, USER_LISTS);
 	TCHAR wstrText[4][128] = { 0 };
-	int pos = 1;
-	while (pos) {
+	int pos = -1;
+	wchar_t wxid[0x100] = { 0 };
+	int sums = ListView_GetItemCount(hiew);
+	for (int i = 0; i < sums; i++) {
 		pos = ListView_GetNextItem(hiew, pos, LVNI_ALL);
-		ListView_GetItemText(hiew, pos, 0, wstrText[0], sizeof(wstrText[0]));
-		wchar_t wxid[0x100] = { 0 };
-		swprintf_s(wxid, L"%s", wstrText);
-		MessageBox(NULL, wxid, L"aaa", 0);
-		GetDlgItemText(hwndDlg, MESSAGE2, messagetemp, sizeof(messagetemp));
-		addUser(1,wxid, messagetemp);
-		Sleep(5000);
+		int bo = ListView_GetItemState(hiew, pos, LVIS_SELECTED);
+		if (bo != 0) {
+			ListView_GetItemText(hiew, pos, 0, wstrText[0], sizeof(wstrText[0]));
+			swprintf_s(chatid1, L"%s", wstrText);
+		}
+	}
+	wchar_t messagetemp[0x300] = { 0 };
+	wchar_t wxid1[0x300] = { 0 };
+	HWND hiew2 = GetDlgItem(hwndDlg, USER_LISTS2);
+	TCHAR wstrText2[4][128] = { 0 };
+	int pos2 = -1;
+	int sums2 = ListView_GetItemCount(hiew2);
+	for (int i = 0; i < sums2; i++) {
+		pos2 = ListView_GetNextItem(hiew2, pos2, LVNI_ALL);
+		int bo2 = ListView_GetItemState(hiew2, pos2, LVIS_SELECTED);
+		if (bo2 != 0) {
+			ListView_GetItemText(hiew2, pos2, 0, wstrText2[0], sizeof(wstrText2[0]));
+			swprintf_s(wxid1, L"%s", wstrText2);
+			addUserfront(chatid1, wxid1);
+			Sleep(10000);
+			GetDlgItemText(hwndDlg, MESSAGE2, messagetemp, sizeof(messagetemp));
+			//wchar_t strsum[0x300] = { 0 };
+			//swprintf_s(strsum, L"chatroom:%s wxid:%s message:%s", chatid1, wxid1, messagetemp);
+			//MessageBox(NULL, strsum, L"aaa", 0);
+			
+			addUser(1,wxid1, messagetemp);
+		}
 	}
 	MessageBox(NULL, L"添加好友发送成功", L"aaa", 0);
+
 }

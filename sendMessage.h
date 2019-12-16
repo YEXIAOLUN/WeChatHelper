@@ -9,3 +9,4 @@ VOID Smessage2(HWND hwndDlg);
 VOID Smessage3(HWND hwndDlg);
 VOID Smessage4(HWND hwndDlg);
 VOID Smessage5(HWND hwndDlg);
+VOID Smessage6(HWND hwndDlg);

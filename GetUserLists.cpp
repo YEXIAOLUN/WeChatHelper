@@ -397,6 +397,7 @@ BOOL GetFriendList()
 		if (pwxid->Length > 0) {
 			wchar_t* wcWxid = pwxid->Buffer; //微信号
 			wchar_t* wcWxNumber = pWxNumber->Buffer; //微信号
+			wchar_t* wcWxRemarks = pWxRemarks->Buffer; //微信号
 			wchar_t* wcpWxName = pWxName->Buffer; //微信号
 			OutputDebugStringW(wcWxid);
 			//wstring wstrWxnumber = pWxNumber->Buffer; //微信号
@@ -414,9 +415,18 @@ BOOL GetFriendList()
 				item.pszText = (LPWSTR)(wcWxNumber);
 				ListView_SetItem(gHwndList, &item);
 
-				item.iSubItem = 2;
-				item.pszText = (LPWSTR)(pWxName->Buffer);
-				ListView_SetItem(gHwndList, &item);
+				if (wcWxRemarks == NULL) {
+					item.iSubItem = 2;
+					item.pszText = (LPWSTR)(wcpWxName);
+					ListView_SetItem(gHwndList, &item);
+				}
+				else {
+
+					item.iSubItem = 2;
+					item.pszText = (LPWSTR)(wcWxRemarks);
+					ListView_SetItem(gHwndList, &item);
+
+				}
 			}
 		}
 	}
@@ -454,6 +464,7 @@ BOOL GetFriendList2()
 		if (pwxid->Length > 0) {
 			wchar_t* wcWxid = pwxid->Buffer; //微信号
 			wchar_t* wcWxNumber = pWxNumber->Buffer; //微信号
+			wchar_t* wcWxRemarks = pWxRemarks->Buffer; //微信号
 			wchar_t* wcpWxName = pWxName->Buffer; //微信号
 			OutputDebugStringW(wcWxid);
 			//wstring wstrWxnumber = pWxNumber->Buffer; //微信号
@@ -471,9 +482,18 @@ BOOL GetFriendList2()
 				item.pszText = (LPWSTR)(wcWxNumber);
 				ListView_SetItem(gHwndList, &item);
 
-				item.iSubItem = 2;
-				item.pszText = (LPWSTR)(pWxName->Buffer);
-				ListView_SetItem(gHwndList, &item);
+				if (wcWxRemarks == NULL) {
+					item.iSubItem = 2;
+					item.pszText = (LPWSTR)(wcpWxName);
+					ListView_SetItem(gHwndList, &item);
+				}
+				else {
+
+					item.iSubItem = 2;
+					item.pszText = (LPWSTR)(wcWxRemarks);
+					ListView_SetItem(gHwndList, &item);
+
+				}
 			}
 		}
 	}
@@ -509,10 +529,13 @@ BOOL GetFriendList3()
 		PWXUNICODE_STRING headMinImg = (PWXUNICODE_STRING)(usersListData + 0xF4);//小图
 		//pWxNumber->Buffer 就是字付串
 		if (pwxid->Length > 0) {
+
+
 			wchar_t* wcWxid = pwxid->Buffer; //微信号
 			wchar_t* wcWxNumber = pWxNumber->Buffer; //微信号
-			wchar_t* wcpWxName = pWxRemarks->Buffer; //微信号
-			OutputDebugStringW(wcWxid);
+			wchar_t* wcWxRemarks = pWxRemarks->Buffer; //微信号
+			wchar_t* wcpWxName = pWxName->Buffer; //微信号
+			
 			//wstring wstrWxnumber = pWxNumber->Buffer; //微信号
 			string  str;
 			Wchar_tToString(str, wcWxid);
@@ -528,9 +551,97 @@ BOOL GetFriendList3()
 				item.pszText = (LPWSTR)(wcWxNumber);
 				ListView_SetItem(gHwndList, &item);
 
-				item.iSubItem = 2;
-				item.pszText = (LPWSTR)(pWxName->Buffer);
+				if (wcWxRemarks == NULL){
+					item.iSubItem = 2;
+					item.pszText = (LPWSTR)(wcpWxName);
+					ListView_SetItem(gHwndList, &item);
+				}
+				else {
+
+					item.iSubItem = 2;
+					item.pszText = (LPWSTR)(wcWxRemarks);
+					ListView_SetItem(gHwndList, &item);
+
+				}
+			}
+		}
+	}
+	return TRUE;
+
+}
+
+BOOL GetFriendList4(HWND hwndDlg)
+{
+	ListView_DeleteAllItems(gHwndList);
+
+	PRAW_WXNODE pFriendNodes = (PRAW_WXNODE)WXADDR_ALL_USERS;
+
+	// 存储所有好友链表节点的首地址
+	DWORD_LIST listFriendAddr;
+
+	// 遍历所有好友的节点地址
+	TraversalWxNode(pFriendNodes->u1.pStartNode, listFriendAddr,
+		pFriendNodes->u1.dwStart, pFriendNodes->dwTotal);
+
+	DWORD_LIST::iterator iter;
+	for (iter = listFriendAddr.begin(); iter != listFriendAddr.end(); iter++)
+	{
+		DWORD dwAddr = *iter;
+		DWORD usersListData = dwAddr + 0x28;
+
+		PWXUNICODE_STRING pwxid = (PWXUNICODE_STRING)(usersListData + 0x8); //微信id
+		PWXUNICODE_STRING pWxNumber = (PWXUNICODE_STRING)(usersListData + 0x1c); //微信号
+		PWXUNICODE_STRING pWxV1 = (PWXUNICODE_STRING)(usersListData + 0x30); //wxV1
+		PWXUNICODE_STRING pWxRemarks = (PWXUNICODE_STRING)(usersListData + 0x50);//备注
+		PWXUNICODE_STRING pWxName = (PWXUNICODE_STRING)(usersListData + 0x64); //微信名称
+		PWXUNICODE_STRING headMaxImg = (PWXUNICODE_STRING)(usersListData + 0x108);//大图
+		PWXUNICODE_STRING headMinImg = (PWXUNICODE_STRING)(usersListData + 0xF4);//小图
+		//pWxNumber->Buffer 就是字付串
+		wchar_t messagetemp[0x300] = { 0 };
+		GetDlgItemText(hwndDlg, MESSAGE6, messagetemp, sizeof(messagetemp));
+		string  temp;
+		Wchar_tToString(temp, messagetemp);
+		if (pwxid->Length > 0) {
+
+
+			wchar_t* wcWxid = pwxid->Buffer; //微信号
+			wchar_t* wcWxNumber = pWxNumber->Buffer; //微信号
+			wchar_t* wcWxRemarks = pWxRemarks->Buffer; //微信号
+			wchar_t* wcpWxName = pWxName->Buffer; //微信号
+
+			string  str;
+			Wchar_tToString(str, wcWxRemarks);
+			string  str2;
+			Wchar_tToString(str2, wcpWxName);
+			int idx = -1;
+			int idx2 = -1;
+			idx = str.find(temp);
+			idx2 = str2.find(temp);
+			
+			if (idx != -1 || idx2 != -1) {
+				LVITEM item = { 0 };
+				item.mask = LVIF_TEXT;
+
+				item.iSubItem = 0;
+				item.pszText = (LPWSTR)(wcWxid);
+				ListView_InsertItem(gHwndList, &item);
+
+				item.iSubItem = 1;
+				item.pszText = (LPWSTR)(wcWxNumber);
 				ListView_SetItem(gHwndList, &item);
+
+				if (wcWxRemarks == NULL) {
+					item.iSubItem = 2;
+					item.pszText = (LPWSTR)(wcpWxName);
+					ListView_SetItem(gHwndList, &item);
+				}
+				else {
+
+					item.iSubItem = 2;
+					item.pszText = (LPWSTR)(wcWxRemarks);
+					ListView_SetItem(gHwndList, &item);
+
+				}
 			}
 		}
 	}
