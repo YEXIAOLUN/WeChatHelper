@@ -8,7 +8,7 @@
 #include "sendXMLmessage.h"
 #include "sendMessage.h"
 #include "sendPictureMessage.h"
-
+#include <atlconv.h>
 using namespace std;
 
 void SendXml(wchar_t* title, wchar_t* subtitle, wchar_t* linkurl, wchar_t* pic, wchar_t* SendWxid, wchar_t* RevWxid)
@@ -98,7 +98,8 @@ void SendXml(wchar_t* title, wchar_t* subtitle, wchar_t* linkurl, wchar_t* pic, 
 	}
 }
 
-#include <atlconv.h>
+
+/*
 VOID SendXml12(HWND hwndDlg) {
 	wchar_t pic[0x300] = { 0 };
 	int len = 100;
@@ -131,7 +132,7 @@ VOID SendXml12(HWND hwndDlg) {
 		}
 
 	}
-	MessageBox(NULL, L"发送成功", L"aaa", 0);
+	MessageBox(NULL, L"发送成功", L"提示", 0);
 }
 VOID SendXml13(HWND hwndDlg) {
 	wchar_t pic[0x300] = { 0 };
@@ -165,7 +166,7 @@ VOID SendXml13(HWND hwndDlg) {
 		}
 
 	}
-	MessageBox(NULL, L"发送成功", L"aaa", 0);
+	MessageBox(NULL, L"发送成功", L"提示", 0);
 }
 VOID SendXml14(HWND hwndDlg) {
 	wchar_t pic[0x300] = { 0 };
@@ -199,8 +200,9 @@ VOID SendXml14(HWND hwndDlg) {
 		}
 
 	}
-	MessageBox(NULL, L"发送成功", L"aaa", 0);
+	MessageBox(NULL, L"发送成功", L"提示", 0);
 }
+*/
 VOID SendXml15(HWND hwndDlg) {
 	wchar_t pic[0x300] = { 0 };
 	int len = 100;
@@ -210,20 +212,26 @@ VOID SendXml15(HWND hwndDlg) {
 	CString strFile = OpenImage();
 	swprintf_s(pic, L"%s", strFile);
 
-	wchar_t title[0x3000] = { 0 };
-	wchar_t content[0x3000] = { 0 };
-	wchar_t linkurl[0x3000] = { 0 };
-
+	
 	USES_CONVERSION;
 	char* szBuf = (char*)GetModuleHandle(L"WeChatWin.dll") + 0X1131BEC;
 	const char* cid = (const char*) * ((DWORD*)szBuf);
 	wchar_t* id = A2W(cid);
 
 	int sums = ListView_GetItemCount(hiew);
+
+	wchar_t title[0x6000] = { 0 };
+	wchar_t content[0x6000] = { 0 };
+	wchar_t linkurl[0x6000] = { 0 };
+	wchar_t title2[0x6000] = { 0 };
+
 	GetDlgItemTextW(hwndDlg, MESSAGE3, title, sizeof(title));
 	GetDlgItemTextW(hwndDlg, MESSAGE4, content, sizeof(content));
+	GetDlgItemTextW(hwndDlg, MESSAGE3, title2, sizeof(title2));
 	GetDlgItemTextW(hwndDlg, MESSAGE5, linkurl, sizeof(linkurl));
-
+	wchar_t mess[0x3000] = { 0 };
+	swprintf_s(mess, L"titles:%s content:%s linkurl:%s", title2, content, linkurl);
+	//MessageBox(NULL, mess, L"提示", 0);
 	for(int i=0;i<sums;i++) {
 		pos = ListView_GetNextItem(hiew, pos, LVNI_ALL);
 		int bo = ListView_GetItemState(hiew, pos, LVIS_SELECTED);
@@ -231,11 +239,11 @@ VOID SendXml15(HWND hwndDlg) {
 			ListView_GetItemText(hiew, pos, 0, wstrText[0], sizeof(wstrText[0]));
 			wchar_t wxid[0x100] = { 0 };
 			swprintf_s(wxid, L"%s", wstrText);
-			SendXml(title, content, linkurl, pic, id, wxid);
+			SendXml(title2, content, linkurl, pic, id, wxid);
 			Sleep(1000);
 		}
 	}
-	MessageBox(NULL, L"发送成功", L"aaa", 0);
+	MessageBox(NULL, L"发送成功", L"提示", 0);
 }
 VOID SendXml16(HWND hwndDlg) {
 	wchar_t pic[0x300] = { 0 };
@@ -249,6 +257,7 @@ VOID SendXml16(HWND hwndDlg) {
 	wchar_t title[0x3000] = { 0 };
 	wchar_t content[0x3000] = { 0 };
 	wchar_t linkurl[0x3000] = { 0 };
+	wchar_t title2[0x6000] = { 0 };
 
 	USES_CONVERSION;
 	char* szBuf = (char*)GetModuleHandle(L"WeChatWin.dll") + 0X1131BEC;
@@ -258,16 +267,17 @@ VOID SendXml16(HWND hwndDlg) {
 	int sums = ListView_GetItemCount(hiew);
 	GetDlgItemTextW(hwndDlg, MESSAGE3, title, sizeof(title));
 	GetDlgItemTextW(hwndDlg, MESSAGE4, content, sizeof(content));
+	GetDlgItemTextW(hwndDlg, MESSAGE3, title2, sizeof(title2));
 	GetDlgItemTextW(hwndDlg, MESSAGE5, linkurl, sizeof(linkurl));
-
+	
 	for(int i=0;i<sums;i++) {
 		pos = ListView_GetNextItem(hiew, pos, LVNI_ALL);
 		ListView_GetItemText(hiew, pos, 0, wstrText[0], sizeof(wstrText[0]));
 		wchar_t wxid[0x100] = { 0 };
 		swprintf_s(wxid, L"%s", wstrText);
-		SendXml(title, content, linkurl, pic, id, wxid);
+		SendXml(title2, content, linkurl, pic, id, wxid);
 		Sleep(1000);
 		
 	}
-	MessageBox(NULL, L"发送成功", L"aaa", 0);
+	MessageBox(NULL, L"发送成功", L"提示", 0);
 }

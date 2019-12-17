@@ -120,7 +120,7 @@ VOID SImage13(HWND hwndDlg) {
 
 
 	}
-	MessageBox(NULL, L"发送成功", L"aaa", 0);
+	MessageBox(NULL, L"发送成功", L"提示", 0);
 }   //公众号发送
 VOID SImage14(HWND hwndDlg) {
 	wchar_t messagetemp[0x300] = { 0 };
@@ -148,7 +148,7 @@ VOID SImage14(HWND hwndDlg) {
 
 
 	}
-	MessageBox(NULL, L"发送成功", L"aaa", 0);
+	MessageBox(NULL, L"发送成功", L"提示", 0);
 }	//群发送
 VOID SImage15(HWND hwndDlg) {
 	wchar_t messagetemp[0x300] = { 0 };
@@ -176,7 +176,7 @@ VOID SImage15(HWND hwndDlg) {
 
 
 	}
-	MessageBox(NULL, L"发送成功", L"aaa", 0);
+	MessageBox(NULL, L"发送成功", L"提示", 0);
 }
 VOID SImage16(HWND hwndDlg) {
 	wchar_t messagetemp[0x300] = { 0 };
@@ -202,7 +202,7 @@ VOID SImage16(HWND hwndDlg) {
 		}
 		
 	}
-	MessageBox(NULL, L"发送成功", L"aaa", 0);
+	MessageBox(NULL, L"发送成功", L"提示", 0);
 }
 
 VOID SImage17(HWND hwndDlg) {
@@ -228,7 +228,7 @@ VOID SImage17(HWND hwndDlg) {
 		Sleep(1000);
 
 	}
-	MessageBox(NULL, L"发送成功", L"aaa", 0);
+	MessageBox(NULL, L"发送成功", L"提示", 0);
 }
 
 CString OpenImage() {

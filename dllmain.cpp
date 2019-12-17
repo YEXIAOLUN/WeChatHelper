@@ -48,10 +48,12 @@ void InitListContrl2(HWND List);
 void InitListContrl(HWND List);
 HWND gUserListView = NULL;
 HWND gUserListView2 = NULL;
+HMODULE hModuleDll;
 DWORD	ThreadProc(HMODULE hModule);
 VOID UnInjectDll();
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_call, LPVOID ipreversed) {
+	hModuleDll = hModule;
 	switch (ul_call)
 	{
 	case DLL_PROCESS_ATTACH:
@@ -146,7 +148,7 @@ INT_PTR CALLBACK DialogProc(
 	case WM_CLOSE:
 		EndDialog(hwndDlg, 0);
 		//CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)UnInjectDll, NULL, 0, NULL);
-		//UnInjectDll();
+		UnInjectDll();
 		break;
 	default:
 		break;
@@ -192,28 +194,31 @@ void InitListContrl2(HWND List)  //群里联系人初始化操作
 	ListView_InsertColumn(List, 2, &pcol);
 }
 
-/*
-VOID UnInject()
+
+VOID UnInjectDll()
 {
+	//FreeLibraryAndExitThread(hModuleDll, 0);
+	
 	HMODULE hModule = NULL;
 
 	//GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS 会增加引用计数
 	//因此，后面还需执行一次FreeLibrary
 	//直接使用本函数（UnInject）地址来定位本模块
-	GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPWSTR)&UnInject, &hModule);
+	GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPWSTR)&UnInjectDll, &hModule);
 
 	if (hModule != 0)
 	{
 		
+		//减少一次引用计数
+		FreeLibrary(hModule);
 		//从内存中卸载
 		FreeLibraryAndExitThread(hModule, 0);
 
-		//减少一次引用计数
-		FreeLibrary(hModule);
+		
 	}
+	
 }
 
 
 
-*/
 

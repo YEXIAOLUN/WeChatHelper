@@ -49,7 +49,7 @@ VOID SendWXIDTextMessage(wchar_t* wxid, wchar_t* message) {
 	char buff[0x81C] = { 0 };
 	wchar_t aaa[0x100] = { 0 };
 	swprintf_s(aaa, L" wxid = %s message = %s", asmWxid, asmMessage);
-	//MessageBox(NULL, aaa, L"aaa", 0);
+
 	OutputDebugString(LPCWSTR(asmWxid));
 
 
@@ -165,7 +165,7 @@ VOID Smessage5(HWND hwndDlg) {
 		}
 
 	}
-	MessageBox(NULL, L"发送成功", L"aaa", 0);
+	MessageBox(NULL, L"发送成功", L"提示", 0);
 }
 //发送所有联系人
 VOID Smessage6(HWND hwndDlg) {
@@ -187,7 +187,7 @@ VOID Smessage6(HWND hwndDlg) {
 		Sleep(1000);
 
 	}
-	MessageBox(NULL, L"发送成功", L"aaa", 0);
+	MessageBox(NULL, L"发送成功", L"提示", 0);
 }
 void Wchar_tToString(std::string& szDst, wchar_t* wchar)
 {

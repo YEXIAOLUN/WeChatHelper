@@ -188,11 +188,6 @@ void addUser(DWORD dwType, wchar_t*  wxid, wchar_t* msg)
 
 VOID addUserfront(wchar_t * chatid1, wchar_t *wxid1) {
 
-	//wchar_t chatid1[50] = L"22476457425@chatroom";
-
-	//wchar_t wxid1[50] = L"wxid_rao4z8481rqs22";
-	//wchar_t wxid1[50] = L"wxid_uyvwh7wpqfdr22";
-
 	char* chatid = (char*)chatid1;
 
 	wechatText2 wxid = { 0 };

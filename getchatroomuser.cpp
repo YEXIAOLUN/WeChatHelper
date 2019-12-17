@@ -232,7 +232,7 @@ VOID AddList(DWORD res_eax)
 		ListView_SetItem(ChatroomView, &item);
 
 	}
-	MessageBox(NULL, L"联系人列表获取成功", L"aaa", 0);
+	MessageBox(NULL, L"联系人列表获取成功", L"提示", 0);
 }
 userInfo getChatromList(wchar_t* wxid) {
 	userInfo user = { 0 };
